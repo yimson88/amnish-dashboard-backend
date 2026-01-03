@@ -15,33 +15,21 @@ const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 // ---------------- CORS ----------------
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://amnish.yimson.pro"
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (Postman, curl)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://amnish.yimson.pro"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: false
+  credentials: true
 }));
-
 
 app.use(express.json());
 
 // ---------------- DATA & IMAGES ----------------
 const DATA_FILE = path.join(process.cwd(), "data/products.json");
 
-const IMAGES_DIR = path.join(process.cwd(), "images");
+const IMAGES_DIR = path.join(process.cwd(), "server/images");
 
 if (!fs.existsSync(IMAGES_DIR)) {
   fs.mkdirSync(IMAGES_DIR, { recursive: true });
@@ -165,6 +153,7 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 
 // ---------- START SERVER ----------
 app.listen(PORT, () => console.log(`✅ Server running at ${BASE_URL}`));
+
 
 
 
