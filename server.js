@@ -1,3 +1,5 @@
+
+
 import express from "express";
 import cors from "cors";
 import fs from "fs";
@@ -10,11 +12,17 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
+
+app.get("/", (req, res) => {
+  res.status(200).send("Backend is running 🚀");
+});
+
 const PORT = process.env.PORT || 5000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
-// ---------------- CORS ----------------
 
+
+// ---------------- CORS ----------------
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -155,6 +163,7 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
+
 
 
 
