@@ -51,12 +51,16 @@ const deleteImageFile = (url) => {
 
 
 // ---------- MULTER ----------
+
 const storage = multer.diskStorage({
-  destination: IMAGES_DIR,
-  filename: (_, file, cb) =>
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`),
+  destination: (_, __, cb) => {
+    cb(null, IMAGES_DIR);
+  },
+  filename: (_, file, cb) => {
+    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+  }
 });
-const upload = multer({ storage });
+
 
 // ---------- AUTH ----------
 const protectDashboard = (req, res, next) => {
@@ -136,6 +140,7 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 
 // ---------- START SERVER ----------
 app.listen(PORT, () => console.log(`✅ Server running at ${BASE_URL}`));
+
 
 
 
