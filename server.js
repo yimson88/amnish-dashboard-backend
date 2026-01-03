@@ -83,9 +83,17 @@ app.post("/api/unlock", async (req, res) => {
 
 // ---------- UPLOAD ----------
 app.post("/api/upload", upload.single("image"), (req, res) => {
-  if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-  res.json({ url: `${BASE_URL}/images/${req.file.filename}` });
+  if (!req.file) {
+    console.error("No file received");
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  res.json({
+    url: `${process.env.PUBLIC_URL || `http://localhost:${PORT}`}/images/${req.file.filename}`
+  });
 });
+
+
 
 // ---------- PRODUCTS ----------
 app.get("/api/products", (_, res) => res.json(readProducts()));
@@ -128,5 +136,6 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 
 // ---------- START SERVER ----------
 app.listen(PORT, () => console.log(`✅ Server running at ${BASE_URL}`));
+
 
 
