@@ -1,5 +1,3 @@
-
-
 import express from "express";
 import cors from "cors";
 import fs from "fs";
@@ -13,6 +11,7 @@ dotenv.config();
 
 const app = express();
 
+// -------- HEALTH CHECK --------
 app.get("/", (req, res) => {
   res.status(200).send("Backend is running 🚀");
 });
@@ -20,14 +19,9 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
-
-
 // ---------------- CORS ----------------
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://amnish.yimson.pro"
-  ],
+  origin: ["http://localhost:5173", "https://amnish.yimson.pro"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -36,21 +30,14 @@ app.use(express.json());
 
 // ---------------- DATA & IMAGES ----------------
 const DATA_FILE = path.join(process.cwd(), "data/products.json");
-
 const IMAGES_DIR = path.join(process.cwd(), "server/images");
 
-if (!fs.existsSync(IMAGES_DIR)) {
-  fs.mkdirSync(IMAGES_DIR, { recursive: true });
-};
+if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 app.use("/images", express.static(IMAGES_DIR));
-
-
 
 // ---------- HELPERS ----------
 const readProducts = () =>
-  fs.existsSync(DATA_FILE)
-    ? JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"))
-    : [];
+  fs.existsSync(DATA_FILE) ? JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")) : [];
 
 const writeProducts = (data) =>
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
@@ -62,18 +49,12 @@ const deleteImageFile = (url) => {
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 };
 
-
 // ---------- MULTER ----------
-
 const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    cb(null, IMAGES_DIR);
-  },
-  filename: (_, file, cb) => {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-  }
+  destination: (_, __, cb) => cb(null, IMAGES_DIR),
+  filename: (_, file, cb) => cb(null, `${Date.now()}${path.extname(file.originalname)}`)
 });
-
+const upload = multer({ storage }); // <-- fixed: created multer instance
 
 // ---------- AUTH ----------
 const protectDashboard = (req, res, next) => {
@@ -99,26 +80,14 @@ app.post("/api/unlock", async (req, res) => {
 });
 
 // ---------- UPLOAD ----------
-app.post("/api/upload", (req, res) => {
-  upload.single("image")(req, res, (err) => {
+app.post("/api/upload", upload.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ message: "No image received" });
 
-    if (err) {
-      console.error("Multer error:", err);
-      return res.status(400).json({ message: err.message });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({ message: "No image received" });
-    }
-
-    res.status(200).json({
-      message: "Upload successful",
-      url: `/images/${req.file.filename}`
-    });
+  res.status(200).json({
+    message: "Upload successful",
+    url: `${BASE_URL}/images/${req.file.filename}` // <-- absolute URL
   });
 });
-
-
 
 // ---------- PRODUCTS ----------
 app.get("/api/products", (_, res) => res.json(readProducts()));
@@ -163,13 +132,3 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
