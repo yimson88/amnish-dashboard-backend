@@ -23,8 +23,12 @@ app.use(express.json());
 
 // ---------------- DATA & IMAGES ----------------
 const DATA_FILE = path.join(process.cwd(), "data/products.json");
-const IMAGES_DIR = path.join(process.cwd(), "images"); // Root images folder
-if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
+
+const IMAGES_DIR = path.join(process.cwd(), "images");
+
+if (!fs.existsSync(IMAGES_DIR)) {
+  fs.mkdirSync(IMAGES_DIR, { recursive: true });
+};
 app.use("/images", express.static(IMAGES_DIR));
 
 
@@ -44,12 +48,6 @@ const deleteImageFile = (url) => {
   const filePath = path.join(IMAGES_DIR, filename);
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 };
-
-const IMAGES_DIR = path.join(process.cwd(), "images");
-
-if (!fs.existsSync(IMAGES_DIR)) {
-  fs.mkdirSync(IMAGES_DIR, { recursive: true });
-}
 
 
 // ---------- MULTER ----------
@@ -130,4 +128,5 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 
 // ---------- START SERVER ----------
 app.listen(PORT, () => console.log(`✅ Server running at ${BASE_URL}`));
+
 
