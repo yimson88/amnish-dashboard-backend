@@ -4,7 +4,7 @@
     "price": "25000",
     "category": "Ethnic & Traditional Dresses",
     "target": "Adults",
-    "image": "http://localhost:5000/images/1767414430085.jpg",
+    "image": `${import.meta.env.VITE_API_URL}/images/1767414430085.jpg`,
     "discover": true,
     "id": 1767414432423
   },
@@ -13,7 +13,7 @@
     "price": "120000",
     "category": "Bridal & Wedding Dresses",
     "target": "Adults",
-    "image": "http://localhost:5000/images/1767414471893.jpg",
+    "image": `${import.meta.env.VITE_API_URL}/images/1767414471893.jpg`,
     "discover": true,
     "id": 1767414474201
   },
@@ -22,17 +22,8 @@
     "price": "15000",
     "category": "Casual Dresses",
     "target": "Adults",
-    "image": "http://localhost:5000/images/1767414504383.jpg",
+    "image": `${import.meta.env.VITE_API_URL}/images/1767414504383.jpg`,
     "discover": true,
     "id": 1767414505864
-  },
-  {
-    "name": "Long",
-    "price": "10000",
-    "category": "Formal & Evening Dresses",
-    "target": "Adults",
-    "image": "http://localhost:5000/images/1767414539714.png",
-    "discover": true,
-    "id": 1767414543977
   }
 ]
