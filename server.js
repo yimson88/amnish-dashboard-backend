@@ -86,14 +86,22 @@ app.post("/api/unlock", async (req, res) => {
 });
 
 // ---------- UPLOAD ----------
-app.post("/api/upload", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    console.error("No file received");
-    return res.status(400).json({ message: "No file uploaded" });
-  }
+app.post("/api/upload", (req, res) => {
+  upload.single("image")(req, res, (err) => {
 
-  res.json({
-    url: `${process.env.PUBLIC_URL || `http://localhost:${PORT}`}/images/${req.file.filename}`
+    if (err) {
+      console.error("Multer error:", err);
+      return res.status(400).json({ message: err.message });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image received" });
+    }
+
+    res.status(200).json({
+      message: "Upload successful",
+      url: `/images/${req.file.filename}`
+    });
   });
 });
 
@@ -140,6 +148,7 @@ app.get("/api/dashboard", protectDashboard, (_, res) => {
 
 // ---------- START SERVER ----------
 app.listen(PORT, () => console.log(`✅ Server running at ${BASE_URL}`));
+
 
 
 
