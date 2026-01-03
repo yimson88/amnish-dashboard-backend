@@ -16,8 +16,10 @@ const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 // ----------------- CORS -----------------
 app.use(cors({
   origin: ["http://localhost:5173", "https://amnish.yimson.pro"],
-  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
+
 
 app.use(express.json());
 
@@ -67,3 +69,4 @@ app.post("/api/products", (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
+
